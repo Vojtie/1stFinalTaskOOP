@@ -174,7 +174,7 @@ public class Wczytywanie {
                 || !czyUłamekEnergiiRodzica || !czyPoczRobów)
             throw new Error("Za mało parametrów");
         ArrayList<Character> spisInstr = stringToArrList(instrukcje);
-        return new Parametry(ileTur, poczRobów, utwórzPoczProgram(instrukcje, spisInstr),
+        return new Parametry(ileTur, poczRobów, utwórzPoczProgram(program, spisInstr),
                 poczEnergia, ileDajeJedzenie, ileRośnieJedzenie, kosztTury, prPowielenia,
                 ułamekEnergiiRodzica, limitPowielania, prUsunięciaInstr, prDodaniaInstr,
                 spisInstr, prZmianyInstr, coIleWypisz);
