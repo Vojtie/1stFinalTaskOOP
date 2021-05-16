@@ -8,8 +8,8 @@ koszt_tury 5
 pr_powielenia 0.2
 ułamek_energii_rodzica 0.3
 limit_powielania 5
-pr_usunięcia_instr 0.7
-pr_dodania_instr 0.3
+pr_usunięcia_instr 0.1
+pr_dodania_instr 0.8
 pr_zmiany_instr 0.7
 spis_instr lpwji
 co_ile_wypisz 5

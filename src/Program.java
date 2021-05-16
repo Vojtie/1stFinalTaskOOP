@@ -3,10 +3,10 @@ import java.util.Random;
 
 public class Program {
 
-    private final char[] spisIntr;
+    private final ArrayList<Character> spisIntr;
     private final ArrayList<Character> instrukcje;
 
-    Program(char[] spisIntr, ArrayList<Character> instrukcje) {
+    Program(ArrayList<Character> spisIntr, ArrayList<Character> instrukcje) {
         this.spisIntr = spisIntr;
         this.instrukcje = instrukcje;
     }
@@ -36,8 +36,8 @@ public class Program {
     }
 
     private Character losujInstrukcję() {
-        int numer = new Random().nextInt(spisIntr.length);
-        return spisIntr[numer];
+        int numer = new Random().nextInt(spisIntr.size());
+        return spisIntr.get(numer);
     }
     // dodaje na koniec
     public void dodajLosowąInstrukcję() {

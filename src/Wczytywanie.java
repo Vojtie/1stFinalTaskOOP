@@ -5,14 +5,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Wczytywanie {
-
-    private static char[] stringToCharArr(String str) {
-        char[] charArr = new char[str.length()];
-        for (int i = 0; i < str.length(); i++)
-            charArr[i] = str.charAt(i);
-        return charArr;
-    }
-
+    
     private static ArrayList<Character> stringToArrList(String str) {
         ArrayList<Character> arrayList = new ArrayList<>();
         for (int i = 0; i < str.length(); i++)
@@ -20,6 +13,16 @@ public class Wczytywanie {
         return arrayList;
     }
 
+    private static Program utwórzPoczProgram(String instrukcje, ArrayList<Character> spisInstr) {
+        ArrayList<Character> listaInstr = new ArrayList<>();
+        for (int i = 0; i < instrukcje.length(); i++) {
+            Character instrukcja = instrukcje.charAt(i);
+            if (spisInstr.contains(instrukcja))
+                listaInstr.add(instrukcja);
+        }
+        return new Program(spisInstr, listaInstr);
+    }
+    
     private static Pole[][] wczytajPlanszę(File plikPlansza, Parametry parametry) throws FileNotFoundException {
         Scanner scan = new Scanner(plikPlansza);
         if (!scan.hasNextLine())
@@ -170,9 +173,8 @@ public class Wczytywanie {
                 || !czyPrUsunięciaInstr || !czyPrZmianyInstr || !czyPrPowielenia || !czySpisInstr
                 || !czyUłamekEnergiiRodzica || !czyPoczRobów)
             throw new Error("Za mało parametrów");
-        char[] spisInstr = stringToCharArr(instrukcje);
-        ArrayList<Character> poczInstr = stringToArrList(program);
-        return new Parametry(ileTur, poczRobów, new Program(spisInstr, poczInstr),
+        ArrayList<Character> spisInstr = stringToArrList(instrukcje);
+        return new Parametry(ileTur, poczRobów, utwórzPoczProgram(instrukcje, spisInstr),
                 poczEnergia, ileDajeJedzenie, ileRośnieJedzenie, kosztTury, prPowielenia,
                 ułamekEnergiiRodzica, limitPowielania, prUsunięciaInstr, prDodaniaInstr,
                 spisInstr, prZmianyInstr, coIleWypisz);

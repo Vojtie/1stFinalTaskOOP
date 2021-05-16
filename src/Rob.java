@@ -12,7 +12,7 @@ public class Rob implements SpisInstrukcji {
 
     /** rob tworzony na początku */
     Rob (Parametry parametry, int numerRoba) {
-        assert(parametry != null);
+        assert (parametry != null);
         this.parametry = parametry;
         this.kierunek = Kierunek.losujKierunek();
         this.program = parametry.dajPoczProg();
@@ -25,7 +25,7 @@ public class Rob implements SpisInstrukcji {
 
     /** rob powielony */
     Rob(Parametry parametry, Program program, int energia, Kierunek kierunek, int[] koordy, int numerRoba) {
-        assert(parametry != null && koordy.length == 2);
+        assert (parametry != null && koordy.length == 2);
         this.parametry = parametry;
         this.program = program;
         this.energia = energia;

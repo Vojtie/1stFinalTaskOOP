@@ -1,4 +1,7 @@
+import java.util.ArrayList;
+
 public class Parametry {
+    
     private final int ileTur;
     private int rozmiarPlanszyX;
     private int rozmiarPlanszyY;
@@ -13,14 +16,14 @@ public class Parametry {
     private final int limitPowielania;
     private final double prUsunięciaInstr;
     private final double prDodaniaInstr;
-    private final char[] spisInstr;
+    private final ArrayList<Character> spisInstr;
     private final double prZmianyInstr;
     private final int coIleWypisz;
 
     public Parametry(int ileTur, int poczIleRobów,
                      Program poczProg, int poczEnergia, int ileDajeJedzenie, int ileRośnieJedzenie,
                      int kosztTury, double prPowielenia, double ułamekEnergiiRodzica, int limitPowielania,
-                     double prUsunięciaInstr, double prDodaniaInstr, char[] spisInstr, double prZmianyInstr,
+                     double prUsunięciaInstr, double prDodaniaInstr, ArrayList<Character> spisInstr, double prZmianyInstr,
                      int coIleWypisz) {
         
         this.ileTur = ileTur;
@@ -101,7 +104,7 @@ public class Parametry {
         return prDodaniaInstr;
     }
 
-    public char[] dajSpisInstr() {
+    public ArrayList<Character> dajSpisInstr() {
         return spisInstr;
     }
 
