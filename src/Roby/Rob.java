@@ -2,7 +2,7 @@ package Roby;
 
 import Pola.*;
 import Prawdopodobieństwo.Prawdopodobieństwo;
-import Symulacja.Świat;
+import Świat.Świat;
 import Wczytywanie.Plansza;
 
 import java.util.Random;

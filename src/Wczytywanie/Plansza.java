@@ -11,7 +11,7 @@ public class Plansza {
 
     private final Pole[][] plansza;
 
-    Plansza(File plikPlansza, int ileRośnieJedzenie, int ileDajeJedzenie) throws NiepoprawnyPlikException, FileNotFoundException {
+    public Plansza(File plikPlansza, int ileRośnieJedzenie, int ileDajeJedzenie) throws NiepoprawnyPlikException, FileNotFoundException {
         Scanner scan = new Scanner(plikPlansza);
         if (!scan.hasNextLine())
             throw new NiepoprawnyPlikException("plansza.txt");

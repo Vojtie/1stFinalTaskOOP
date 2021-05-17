@@ -1,4 +1,4 @@
-package Symulacja;
+package Świat;
 
 import Roby.Rob;
 import Roby.Roby;
@@ -12,7 +12,7 @@ public abstract class Świat {
     protected final Plansza plansza;
     protected final Roby roby;
 
-    Świat(Parametry parametry, Plansza plansza) {
+    public Świat(Parametry parametry, Plansza plansza) {
         this.parametry = parametry;
         this.plansza = plansza;
         this.roby = new Roby(parametry.dajPoczIleRobów(), parametry.dajRozmiarPlanszyX(),

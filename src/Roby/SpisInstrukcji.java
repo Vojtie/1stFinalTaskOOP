@@ -1,6 +1,6 @@
 package Roby;
 
-import Symulacja.Świat;
+import Świat.Świat;
 
 public interface SpisInstrukcji {
     void lewo(Świat świat);
