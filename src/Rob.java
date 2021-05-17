@@ -2,7 +2,14 @@ import java.util.Random;
 
 public class Rob implements SpisInstrukcji {
 
-    private final Parametry parametry;
+    private final int rozmiarPlanszyX;
+    private final int rozmiarPlanszyY;
+    private final Program poczProgram;
+    private final int kosztTury;
+    private final int limitPowielania;
+    private final double ułamekEnergiiRodzica;
+    private final double prPowielenia;
+    private final int poczEnergia;
     private final int numerRoba;
     private Kierunek kierunek; // gora/prawo/dol/lewo
     private final Program program; // kod/ciag instrukcji
@@ -11,22 +18,39 @@ public class Rob implements SpisInstrukcji {
     private int długośćŻycia;
 
     /** rob tworzony na początku */
-    Rob (Parametry parametry, int numerRoba) {
-        assert (parametry != null);
-        this.parametry = parametry;
+    Rob (int rozmiarPlanszyX, int rozmiarPlanszyY, Program poczProgram, int kosztTury,
+         int limitPowielania, double ułamekEnergiiRodzica, double prPowielenia, int poczEnergia,
+         int numerRoba) {
+        this.rozmiarPlanszyX = rozmiarPlanszyX;
+        this.rozmiarPlanszyY = rozmiarPlanszyY;
+        this.poczProgram = poczProgram;
+        this.kosztTury = kosztTury;
+        this.limitPowielania = limitPowielania;
+        this.ułamekEnergiiRodzica = ułamekEnergiiRodzica;
+        this.prPowielenia = prPowielenia;
+        this.poczEnergia = poczEnergia;
         this.kierunek = Kierunek.losujKierunek();
-        this.program = parametry.dajPoczProg();
-        this.energia = parametry.dajPoczEnergia();
-        this.koordy = new int[] {new Random().nextInt(parametry.dajRozmiarPlanszyX()),
-                                 new Random().nextInt(parametry.dajRozmiarPlanszyY())};
+        this.program = poczProgram;
+        this.energia = poczEnergia;
+        this.koordy = new int[] {new Random().nextInt(rozmiarPlanszyX),
+                                 new Random().nextInt(rozmiarPlanszyY)};
         this.długośćŻycia = 0;
         this.numerRoba = numerRoba;
     }
 
     /** rob powielony */
-    Rob(Parametry parametry, Program program, int energia, Kierunek kierunek, int[] koordy, int numerRoba) {
-        assert (parametry != null && koordy.length == 2);
-        this.parametry = parametry;
+    Rob (int rozmiarPlanszyX, int rozmiarPlanszyY, Program poczProgram, int kosztTury,
+        int limitPowielania, double ułamekEnergiiRodzica, double prPowielenia, int poczEnergia,
+        Program program, int energia, Kierunek kierunek, int[] koordy, int numerRoba) {
+        assert (koordy.length == 2);
+        this.rozmiarPlanszyX = rozmiarPlanszyX;
+        this.rozmiarPlanszyY = rozmiarPlanszyY;
+        this.poczProgram = poczProgram;
+        this.kosztTury = kosztTury;
+        this.limitPowielania = limitPowielania;
+        this.ułamekEnergiiRodzica = ułamekEnergiiRodzica;
+        this.prPowielenia = prPowielenia;
+        this.poczEnergia = poczEnergia;
         this.program = program;
         this.energia = energia;
         this.kierunek = kierunek;
@@ -34,6 +58,7 @@ public class Rob implements SpisInstrukcji {
         this.długośćŻycia = 0;
         this.numerRoba = numerRoba;
     }
+    
     public int dajNumerRoba() {
         return numerRoba;
     }
@@ -44,10 +69,6 @@ public class Rob implements SpisInstrukcji {
                 + długośćŻycia + ", dłg programu: " + dajDłgPrg();
     }
     
-    public Program dajProgram() {
-        return program;
-    }
-
     public int dajDłgPrg() {
         return program.dajDłgPrg();
     }
@@ -72,7 +93,11 @@ public class Rob implements SpisInstrukcji {
         assert(koordy.length == 2);
         this.koordy = koordy;
     }
-
+    
+    public void ustawKierunek(Kierunek kierunek) {
+        this.kierunek = kierunek;
+    }
+    
     public boolean czyŻyje() {
         return energia >= 0;
     }
@@ -84,16 +109,16 @@ public class Rob implements SpisInstrukcji {
             switch(akcja) {
                 case 'l':
                     //wyłączyć komendy nie będące w spisInstr
-                    lewo();
+                    lewo(świat);
                     break;
                 case 'p':
-                    prawo();
+                    prawo(świat);
                     break;
                 case 'i':
                     idź(świat);
                     break;
                 case 'w':
-                    wąchaj(świat.dajPlanszę());
+                    wąchaj(świat);
                     break;
                 case 'j':
                     jedz(świat);
@@ -105,59 +130,73 @@ public class Rob implements SpisInstrukcji {
     }
 
     public void następnaTura() {
-        energia -= parametry.dajKosztTury();
+        energia -= kosztTury;
         długośćŻycia++;
     }
 
     @Override
     public void idź(Świat świat) {
         if (kierunek.czyX())
-            świat.przemieść(this, new int[] {kierunek.wartość, 0});
+            świat.przemieśćRoba(this, new int[] {kierunek.wartość, 0});
         else
-            świat.przemieść(this, new int[] {0, kierunek.wartość});
-        //sprawdzic
-        Pole pole = świat.dajPole(new int[] {dajX(), dajY()});
+            świat.przemieśćRoba(this, new int[] {0, kierunek.wartość});
+        Pole pole = świat.dajPlanszę().dajPole(new int[] {dajX(), dajY()});
         if (pole instanceof PoleŻywieniowe)
             energia += ((PoleŻywieniowe) pole).dajPożywienie();
     }
 
     @Override
-    public void prawo() {
-        kierunek = kierunek.dajObrótWPrawo();
+    public void prawo(Świat świat) {
+         świat.obróćRoba(this, kierunek.dajObrótWPrawo());
     }
 
     @Override
-    public void lewo() {
-        kierunek = kierunek.dajObrótWLewo();
+    public void lewo(Świat świat) {
+        świat.obróćRoba(this, kierunek.dajObrótWLewo());
     }
-
+/*
     @Override
     public void wąchaj(Pole[][] plansza) {
-        if (plansza[Math.floorMod(dajX() + 1, parametry.dajRozmiarPlanszyX())][dajY()] instanceof PoleŻywieniowe
-            && ((PoleŻywieniowe) plansza[Math.floorMod(dajX() + 1, parametry.dajRozmiarPlanszyX())][dajY()]).maPożywienie())
+        if (plansza[Math.floorMod(dajX() + 1, rozmiarPlanszyX)][dajY()] instanceof PoleŻywieniowe
+            && ((PoleŻywieniowe) plansza[Math.floorMod(dajX() + 1, rozmiarPlanszyX)][dajY()]).maPożywienie())
             kierunek = Kierunek.PRAWO;
-        else if (plansza[Math.floorMod(dajX() - 1, parametry.dajRozmiarPlanszyX())][dajY()] instanceof PoleŻywieniowe
-                && ((PoleŻywieniowe) plansza[Math.floorMod(dajX() - 1, parametry.dajRozmiarPlanszyX())][dajY()]).maPożywienie())
+        else if (plansza[Math.floorMod(dajX() - 1, rozmiarPlanszyX)][dajY()] instanceof PoleŻywieniowe
+                && ((PoleŻywieniowe) plansza[Math.floorMod(dajX() - 1, rozmiarPlanszyX)][dajY()]).maPożywienie())
             kierunek = Kierunek.LEWO;
-        else if (plansza[dajX()][Math.floorMod(dajY() + 1, parametry.dajRozmiarPlanszyY())] instanceof PoleŻywieniowe
-                && ((PoleŻywieniowe) plansza[dajX()][Math.floorMod(dajY() + 1, parametry.dajRozmiarPlanszyY())]).maPożywienie())
+        else if (plansza[dajX()][Math.floorMod(dajY() + 1, rozmiarPlanszyY)] instanceof PoleŻywieniowe
+                && ((PoleŻywieniowe) plansza[dajX()][Math.floorMod(dajY() + 1, rozmiarPlanszyY)]).maPożywienie())
             kierunek = Kierunek.GÓRA;
-        else if (plansza[dajX()][Math.floorMod(dajY() - 1, parametry.dajRozmiarPlanszyY())] instanceof PoleŻywieniowe
-                && ((PoleŻywieniowe) plansza[dajX()][Math.floorMod(dajY() - 1, parametry.dajRozmiarPlanszyY())]).maPożywienie())
+        else if (plansza[dajX()][Math.floorMod(dajY() - 1, rozmiarPlanszyY)] instanceof PoleŻywieniowe
+                && ((PoleŻywieniowe) plansza[dajX()][Math.floorMod(dajY() - 1, rozmiarPlanszyY)]).maPożywienie())
             kierunek = Kierunek.DÓŁ;
+    }
+*/
+    @Override
+    public void wąchaj(Świat świat) {
+        Plansza plansza = świat.dajPlanszę();
+        Kierunek nowyKierunek = kierunek;
+        if (plansza.czyPoleZPożywieniem(new int[] {Math.floorMod(dajX() + 1, rozmiarPlanszyX), dajY()}))
+            nowyKierunek = Kierunek.PRAWO;
+        else if (plansza.czyPoleZPożywieniem(new int[] {Math.floorMod(dajX() - 1, rozmiarPlanszyX), dajY()}))
+            nowyKierunek = Kierunek.LEWO;
+        else if (plansza.czyPoleZPożywieniem(new int[] {dajX(), Math.floorMod(dajY() + 1, rozmiarPlanszyY)}))
+            nowyKierunek = Kierunek.GÓRA;
+        else if (plansza.czyPoleZPożywieniem(new int[] {dajX(), Math.floorMod(dajY() - 1, rozmiarPlanszyY)}))
+            nowyKierunek = Kierunek.DÓŁ;
+        świat.obróćRoba(this, nowyKierunek);
     }
 
     @Override
     public void jedz(Świat świat) {
-        Pole[][] plansza = świat.dajPlanszę();
+        Plansza plansza = świat.dajPlanszę();
         int[] wektor = {0, 0};
         for (wektor[0] = -1; wektor[0] < 2; wektor[0]++) {
             for (wektor[1] = -1; wektor[1] < 2; wektor[1]++) {
                 if (wektor[0] == 0 && wektor[1] == 0) continue;
-                if (plansza[Math.floorMod(dajX() + wektor[0], parametry.dajRozmiarPlanszyX())][Math.floorMod(dajY() + wektor[1], parametry.dajRozmiarPlanszyY())] instanceof PoleŻywieniowe
-                        && ((PoleŻywieniowe) plansza[Math.floorMod(dajX() + wektor[0], parametry.dajRozmiarPlanszyX())][Math.floorMod(dajY() + wektor[1], parametry.dajRozmiarPlanszyY())]).maPożywienie())
-                {
-                    świat.przemieść(this, wektor);
+                if (plansza.czyPoleZPożywieniem(new int[] {Math.floorMod(dajX() + wektor[0], rozmiarPlanszyX),
+                        Math.floorMod(dajY() + wektor[1], rozmiarPlanszyY)}))
+                {    
+                    świat.przemieśćRoba(this, wektor);
                     break;
                 }
             }
@@ -168,35 +207,19 @@ public class Rob implements SpisInstrukcji {
      * powielanie
      */
     public boolean czyPowiela() {
-        return (energia >= parametry.dajLimitPowielania() && new Prawdopodobieństwo().losuj(parametry.dajPrPowielenia()));
+        return (energia >= limitPowielania && new Prawdopodobieństwo().losuj(prPowielenia));
     }
 
     public int oddajCzęśćEnergii() {
-        int energiaDziecka = (int)(energia * parametry.dajUłamekEnergiiRodzica());
+        int energiaDziecka = (int)(energia * ułamekEnergiiRodzica);
         energia -= energiaDziecka;
         return energiaDziecka;
     }
 
     public Rob powiel(int numerRoba) {
         assert (czyŻyje());
-        return new Rob(parametry, program.mutuj(), oddajCzęśćEnergii(), kierunek.dajPrzeciwnyKierunek(), koordy, numerRoba);
+        return new Rob(rozmiarPlanszyX, rozmiarPlanszyY, poczProgram, kosztTury, limitPowielania,
+                ułamekEnergiiRodzica, prPowielenia, poczEnergia , program.mutuj(), oddajCzęśćEnergii(),
+                kierunek.dajPrzeciwnyKierunek(), koordy, numerRoba);
     }
-
-    /** zrobic osobna klase
-     * mutacje
-     *
-    public Program mutuj() {
-        Program zmutowany = program;
-        if (program != null) {
-            zmutowany = new Program(parametry.dajSpisInstr(), program.zróbKopię());
-            if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrUsunięciaInstr()))
-                zmutowany.usuńOstatniąInstrukcję();
-            if (new Prawdopodobieństwo().losuj(parametry.dajPrDodaniaInstr()))
-                zmutowany.dodajLosowąInstrukcję();
-            if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrZmianyInstr()))
-                zmutowany.zmieńLosowąInstrukcję();
-        }
-        return zmutowany;
-    }
-     */
 }

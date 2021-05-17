@@ -20,11 +20,11 @@ public class Parametry {
     private final double prZmianyInstr;
     private final int coIleWypisz;
 
-    public Parametry(int ileTur, int poczIleRobów,
-                     Program poczProg, int poczEnergia, int ileDajeJedzenie, int ileRośnieJedzenie,
-                     int kosztTury, double prPowielenia, double ułamekEnergiiRodzica, int limitPowielania,
-                     double prUsunięciaInstr, double prDodaniaInstr, ArrayList<Character> spisInstr, double prZmianyInstr,
-                     int coIleWypisz) {
+    public Parametry(int ileTur, int poczIleRobów, Program poczProg, int poczEnergia,
+                     int ileDajeJedzenie, int ileRośnieJedzenie, int kosztTury,
+                     double prPowielenia, double ułamekEnergiiRodzica, int limitPowielania,
+                     double prUsunięciaInstr, double prDodaniaInstr, ArrayList<Character> spisInstr,
+                     double prZmianyInstr, int coIleWypisz) {
         
         this.ileTur = ileTur;
         this.poczIleRobów = poczIleRobów;

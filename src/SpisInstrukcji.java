@@ -1,11 +1,11 @@
 public interface SpisInstrukcji {
-    void lewo();
+    void lewo(Świat świat);
 
-    void prawo();
+    void prawo(Świat świat);
 
     void idź(Świat świat);
 
-    void wąchaj(Pole[][] plansza);
+    void wąchaj(Świat świat);
 
     void jedz(Świat świat);
 }

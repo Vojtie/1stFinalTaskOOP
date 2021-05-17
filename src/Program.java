@@ -2,13 +2,21 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Program {
-    
-    private final ParametryProgramu parametry;
+
+    private final double prDodaniaInstr;
+    private final double prZmianyInstr;
+    private final double prUsunięciaInstr;
+    private final ArrayList<Character> spisInstr;
     private final ArrayList<Character> instrukcje;
 
-    Program(ParametryProgramu parametry, ArrayList<Character> instrukcje) {
-        assert (parametry != null && instrukcje != null);
-        this.parametry = parametry;
+    public Program(double prDodaniaInstr, double prZmianyInstr, double prUsunięciaInstr,
+                   ArrayList<Character> spisInstr, ArrayList<Character> instrukcje) {
+        
+        assert (spisInstr != null && instrukcje != null);
+        this.prDodaniaInstr = prDodaniaInstr;
+        this.prZmianyInstr = prZmianyInstr;
+        this.prUsunięciaInstr = prUsunięciaInstr;
+        this.spisInstr = spisInstr;
         this.instrukcje = instrukcje;
     }
 
@@ -37,7 +45,6 @@ public class Program {
     }
 
     private Character losujInstrukcję() {
-        ArrayList<Character> spisInstr = parametry.dajSpisInstr();
         int numer = new Random().nextInt(spisInstr.size());
         return spisInstr.get(numer);
     }
@@ -52,17 +59,18 @@ public class Program {
         instrukcje.set(doZmiany, losujInstrukcję());
     }
 
-    public boolean czyPusty() {
+    public boolean czyNiepusty() {
         return dajLiczbęInstrukcji() > 0;
     }
 
     public Program mutuj() {
-        Program zmutowany = new Program(parametry, zróbKopię());
-        if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrUsunięciaInstr()))
+        Program zmutowany = new Program(prDodaniaInstr, prZmianyInstr, prUsunięciaInstr,
+                spisInstr, zróbKopię());
+        if (zmutowany.czyNiepusty() && new Prawdopodobieństwo().losuj(prUsunięciaInstr))
             zmutowany.usuńOstatniąInstrukcję();
-        if (new Prawdopodobieństwo().losuj(parametry.dajPrDodaniaInstr()))
+        if (new Prawdopodobieństwo().losuj(prDodaniaInstr))
             zmutowany.dodajLosowąInstrukcję();
-        if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrZmianyInstr()))
+        if (zmutowany.czyNiepusty() && new Prawdopodobieństwo().losuj(prZmianyInstr))
             zmutowany.zmieńLosowąInstrukcję();
         return zmutowany;
     }

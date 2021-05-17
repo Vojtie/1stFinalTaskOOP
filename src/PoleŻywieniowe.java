@@ -1,26 +1,25 @@
 public class PoleŻywieniowe extends Pole {
-    // rob je pożywienie tylko jeśli wejdzie na pole na którym już jest pożywienie
-    private Parametry parametry;
+
+    private final int ileRośnieJedzenie;
+    private final int ileDajeJedzenie;
     private int etapRośnięcia;
 
-    PoleŻywieniowe(Parametry parametry) {
-        this.parametry = parametry;
-        this.etapRośnięcia = parametry.dajIleRośnieJedzenie();
+    public PoleŻywieniowe(int ileRośnieJedzenie, int ileDajeJedzenie) {
+        this.ileRośnieJedzenie = ileRośnieJedzenie;
+        this.ileDajeJedzenie = ileDajeJedzenie;
+        this.etapRośnięcia = ileRośnieJedzenie;
     }
 
-    public void ustawParametry(Parametry parametry) {
-        this.parametry = parametry;
-    }
-    
     public boolean maPożywienie() {
-        return etapRośnięcia == parametry.dajIleRośnieJedzenie();
+        return etapRośnięcia == ileRośnieJedzenie;
     }
 
     public int dajPożywienie() {
         assert (maPożywienie());
         etapRośnięcia = 0;
-        return parametry.dajIleDajeJedzenie();
+        return ileDajeJedzenie;
     }
+    
     public void następnaTura() {
         if (!maPożywienie())
             etapRośnięcia++;

@@ -7,18 +7,21 @@ public enum Kierunek {
             return "prawo";
         }
     },
+    
     LEWO(-1) {
         @Override
         public String toString() {
             return "lewo";
         }
     },
+    
     GÓRA(1) {
         @Override
         public String toString() {
             return "góra";
         }
     },
+    
     DÓŁ(-1) {
         @Override
         public String toString() {
