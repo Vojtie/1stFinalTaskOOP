@@ -5,15 +5,32 @@ public class Symulacja extends Świat {
     }
 
     private void wypiszPodstawoweDaneSymulacji(int numerTury) {
-        System.out.println(numerTury + dajOpisStanuŚwiata());
+        System.out.println(numerTury + dajBieżącyStanŚwiata());
     }
-    
-    public void wypiszBieżącyStanSymulacji() {
+
+    private void wypiszBieżącyStanSymulacji() {
         System.out.println("Stan robów:");
-        for (int i = 0; i < dajLiczbęRobów(); i++) {
-            Rob rob = dajRoba(i);
+        for (int i = 0; i < roby.dajLiczbęRobów(); i++) {
+            Rob rob = roby.dajRoba(i);
             System.out.println("rob nr " + rob.dajNumerRoba() + ":\t" + rob.toString());
         }
+    }
+    
+    private void wypiszPlanszę() {
+        
+    }
+
+    private void następnaTura() {
+        int liczbaRobów = roby.dajLiczbęRobów();
+        for (int i = 0; i < liczbaRobów; i++) {
+            Rob rob = roby.dajRoba(i);
+            rob.wykonajInstrukcje(this);
+            if (rob.czyŻyje() && rob.czyPowiela())
+                roby.dodajRoba(rob.powiel(roby.dajNumerOstRoba() + 1));
+            rob.następnaTura();
+        }
+        roby.usuńMartweRoby();
+        plansza.następnaTura();
     }
     
     public void symuluj() {

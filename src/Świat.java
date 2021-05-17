@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /**
  * Parametry: (kazdy rob dostaje ten sam parametr)
  *
@@ -39,59 +37,28 @@ import java.util.ArrayList;
  * - ułamek_energii_rodzica i prawd \in [0,1]
  * - rob może umrzeć przy porodzie
  *
+ * TO DO:
+ * - poszerzyc wypisywanie stanu
+ * - podzielić na paczki
+ * - przejrzeć styl
+ * - zmienić dokładność wypisywania doubli - done!
  *
  */
 public class Świat {
 
     protected final Parametry parametry;
-    private final Plansza plansza;
-    private final ArrayList<Rob> roby;
+    protected final Plansza plansza;
+    protected final Roby roby;
 
     Świat(Parametry parametry, Plansza plansza) {
         this.parametry = parametry;
         this.plansza = plansza;
-        this.roby = generujRoby();
+        this.roby = new Roby(parametry.dajPoczIleRobów(), parametry.dajRozmiarPlanszyX(),
+                parametry.dajRozmiarPlanszyY(), parametry.dajPoczProg(), parametry.dajKosztTury(),
+                parametry.dajLimitPowielania(), parametry.dajUłamekEnergiiRodzica(), parametry.dajPrPowielenia(),
+                parametry.dajPoczEnergia());
     }
-
-    private ArrayList<Rob> dajRoby() {
-        return roby;
-    }
-
-    protected int dajLiczbęRobów() {
-        int wynik = 0;
-        if (dajRoby() != null)
-            wynik = roby.size();
-        return wynik;
-    }
-
-    protected Rob dajRoba(int indeks) {
-        return roby.get(indeks);
-    }
-
-    private void dodajRoba(Rob nowy) {
-        roby.add(nowy);
-    }
-
-    private void usuńMartweRoby() {
-        roby.removeIf(rob -> !rob.czyŻyje());
-    }
-
-    private ArrayList<Rob> generujRoby() {
-        ArrayList<Rob> roby = new ArrayList<>();
-        for (int i = 0 ; i < parametry.dajPoczIleRobów(); i++)
-            roby.add(new Rob(parametry.dajRozmiarPlanszyX(), parametry.dajRozmiarPlanszyY(), parametry.dajPoczProg(),
-                    parametry.dajKosztTury(), parametry.dajLimitPowielania(), parametry.dajUłamekEnergiiRodzica(),
-                    parametry.dajPrPowielenia(), parametry.dajPoczEnergia(), i + 1));
-        return roby;
-    }
-
-    private int dajNumerOstRoba() {
-        int wynik = 0;
-        for (int i = 0; i < dajLiczbęRobów(); i++)
-            wynik = Math.max(wynik, dajRoba(i).dajNumerRoba());
-        return wynik;
-    }
-
+    
     public void przemieśćRoba(Rob rob, int[] wektor) {
         assert(wektor.length == 2);
         rob.ustawKoordy(new int[] {Math.floorMod(rob.dajX() + wektor[0], parametry.dajRozmiarPlanszyX()),
@@ -107,97 +74,14 @@ public class Świat {
         return plansza;
     }
 
-    private int dajMinWiek() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.min(wynik, rob.dajDłgŻycia());
-        return wynik;
-    }
-
-    private double dajŚredWiek() {
-        double wynik = 0;
-        if (dajLiczbęRobów() != 0) {
-            for (Rob rob : dajRoby())
-                wynik += rob.dajDłgŻycia();
-            wynik /= dajLiczbęRobów();
-        }
-        return wynik;
-    }
-
-    private int dajMaxWiek() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.max(wynik, rob.dajDłgŻycia());
-        return wynik;
-    }
-
-    private int dajMinDłgPrg() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.min(wynik, rob.dajDłgPrg());
-        return wynik;
-    }
-
-    private double dajŚredDłgPrg() {
-        double wynik = 0;
-        if (dajLiczbęRobów() != 0) {
-            for (Rob rob : dajRoby())
-                wynik += rob.dajDłgPrg();
-            wynik /= dajLiczbęRobów();
-        }
-        return wynik;
-    }
-
-    private int dajMaxDłgPrg() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.max(wynik, rob.dajDłgPrg());
-        return wynik;
-    }
-
-    private int dajMinEnerg() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.min(wynik, rob.dajLiczbęJedEnerg());
-        return wynik;
-    }
-
-    private double dajŚredEnerg() {
-        double wynik = 0;
-        if (dajLiczbęRobów() != 0) {
-            for (Rob rob : dajRoby())
-                wynik += rob.dajLiczbęJedEnerg();
-            wynik /= dajLiczbęRobów();
-        }
-        return wynik;
-    }
-
-    private int dajMaxEnerg() {
-        int wynik = 0;
-        for (Rob rob : dajRoby())
-            wynik = Math.max(wynik, rob.dajLiczbęJedEnerg());
-        return wynik;
-    }
-
-    protected String dajOpisStanuŚwiata() {
-        return ", rob: " + dajLiczbęRobów()
-                + ", żyw: " + plansza.dajLiczbęPólZŻyw() + ", prg: " + dajMinDłgPrg()
-                + "/" + dajŚredDłgPrg() + "/" + dajMaxDłgPrg() + ", energ: "
-                + dajMinEnerg() + "/" + dajŚredEnerg() + "/" + dajMaxEnerg()
-                + ", wiek: " + dajMinWiek() + "/" + dajŚredWiek() + "/"
-                + dajMaxWiek();
-    }
-    
-    protected void następnaTura() {
-        int liczbaRobów = dajLiczbęRobów();
-        for (int i = 0; i < liczbaRobów; i++) {
-            Rob rob = dajRoba(i);
-            rob.wykonajInstrukcje(this);
-            if (rob.czyŻyje() && rob.czyPowiela())
-                dodajRoba(rob.powiel(dajNumerOstRoba() + 1));
-            rob.następnaTura();
-        }
-        usuńMartweRoby();
-        plansza.następnaTura();
+    protected String dajBieżącyStanŚwiata() {
+        int[] minMaxStatRob = roby.dajMinMaxStatystykiRobów();
+        double[] średStatRob = roby.dajŚredStatystykiRobów();
+        return ", rob: " + roby.dajLiczbęRobów()
+                + ", żyw: " + plansza.dajLiczbęPólZŻyw() + ", prg: " + minMaxStatRob[0]
+                + "/" + średStatRob[0] + "/" + minMaxStatRob[1] + ", energ: "
+                + minMaxStatRob[2] + "/" + średStatRob[1] + "/" + minMaxStatRob[3]
+                + ", wiek: " + minMaxStatRob[4] + "/" + średStatRob[2] + "/"
+                + minMaxStatRob[5];
     }
 }
