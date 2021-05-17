@@ -43,6 +43,10 @@ public class Rob implements SpisInstrukcji {
                 + ", pozycja: (" + koordy[0] + ", " + koordy[1] + "), wiek: "
                 + długośćŻycia + ", dłg programu: " + dajDłgPrg();
     }
+    
+    public Program dajProgram() {
+        return program;
+    }
 
     public int dajDłgPrg() {
         return program.dajDłgPrg();
@@ -159,16 +163,12 @@ public class Rob implements SpisInstrukcji {
             }
         }
     }
-
-    private boolean losuj(double prawdopodobieństwo) {
-        return (new Random().nextDouble() <= prawdopodobieństwo);
-    }
-
+    
     /**
      * powielanie
      */
     public boolean czyPowiela() {
-        return (energia >= parametry.dajLimitPowielania() && losuj(parametry.dajPrPowielenia()));
+        return (energia >= parametry.dajLimitPowielania() && new Prawdopodobieństwo().losuj(parametry.dajPrPowielenia()));
     }
 
     public int oddajCzęśćEnergii() {
@@ -178,24 +178,25 @@ public class Rob implements SpisInstrukcji {
     }
 
     public Rob powiel(int numerRoba) {
-        assert (czyŻyje() && czyPowiela());
-        return (new Rob(parametry, mutuj(), oddajCzęśćEnergii(), kierunek.dajPrzeciwnyKierunek(), koordy, numerRoba));
+        assert (czyŻyje());
+        return new Rob(parametry, program.mutuj(), oddajCzęśćEnergii(), kierunek.dajPrzeciwnyKierunek(), koordy, numerRoba);
     }
 
     /** zrobic osobna klase
      * mutacje
-     */
+     *
     public Program mutuj() {
         Program zmutowany = program;
         if (program != null) {
             zmutowany = new Program(parametry.dajSpisInstr(), program.zróbKopię());
-            if (!zmutowany.czyPusty() && losuj(parametry.dajPrUsunięciaInstr()))
+            if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrUsunięciaInstr()))
                 zmutowany.usuńOstatniąInstrukcję();
-            if (losuj(parametry.dajPrDodaniaInstr()))
+            if (new Prawdopodobieństwo().losuj(parametry.dajPrDodaniaInstr()))
                 zmutowany.dodajLosowąInstrukcję();
-            if (!zmutowany.czyPusty() && losuj(parametry.dajPrZmianyInstr()))
+            if (!zmutowany.czyPusty() && new Prawdopodobieństwo().losuj(parametry.dajPrZmianyInstr()))
                 zmutowany.zmieńLosowąInstrukcję();
         }
         return zmutowany;
     }
+     */
 }

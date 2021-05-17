@@ -13,14 +13,14 @@ public class Wczytywanie {
         return arrayList;
     }
 
-    private static Program utwórzPoczProgram(String instrukcje, ArrayList<Character> spisInstr) {
+    private static Program utwórzPoczProgram(String instrukcje, ParametryProgramu parametry) {
         ArrayList<Character> listaInstr = new ArrayList<>();
         for (int i = 0; i < instrukcje.length(); i++) {
             Character instrukcja = instrukcje.charAt(i);
-            if (spisInstr.contains(instrukcja))
+            if (parametry.dajSpisInstr().contains(instrukcja))
                 listaInstr.add(instrukcja);
         }
-        return new Program(spisInstr, listaInstr);
+        return new Program(parametry, listaInstr);
     }
     
     private static Pole[][] wczytajPlanszę(File plikPlansza, Parametry parametry) throws FileNotFoundException {
@@ -174,9 +174,10 @@ public class Wczytywanie {
                 || !czyUłamekEnergiiRodzica || !czyPoczRobów)
             throw new Error("Za mało parametrów");
         ArrayList<Character> spisInstr = stringToArrList(instrukcje);
-        return new Parametry(ileTur, poczRobów, utwórzPoczProgram(program, spisInstr),
-                poczEnergia, ileDajeJedzenie, ileRośnieJedzenie, kosztTury, prPowielenia,
-                ułamekEnergiiRodzica, limitPowielania, prUsunięciaInstr, prDodaniaInstr,
+        Program poczProgram = utwórzPoczProgram(program, new ParametryProgramu(prDodaniaInstr, prZmianyInstr,
+                prUsunięciaInstr, spisInstr));
+        return new Parametry(ileTur, poczRobów, poczProgram, poczEnergia, ileDajeJedzenie, ileRośnieJedzenie,
+                kosztTury, prPowielenia, ułamekEnergiiRodzica, limitPowielania, prUsunięciaInstr, prDodaniaInstr,
                 spisInstr, prZmianyInstr, coIleWypisz);
     }
 
